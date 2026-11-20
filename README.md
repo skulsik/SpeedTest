@@ -1,22 +1,107 @@
-# Internet speed checker
+# Internet Speed Test
 
-A small Python 3 command-line tool that downloads a URL ten times in sequence. It waits for each response body to finish before starting the next request, then prints the total downloaded data, average request time, and average download speed.
+Консольная утилита на Python для измерения скорости скачивания данных
+по HTTP/HTTPS.
 
-## Requirements
+Программа выполняет 10 последовательных запросов к указанному URL,
+полностью скачивает каждый ответ и рассчитывает статистику загрузки.
 
-- Python 3.10 or newer
-- No third-party packages
+## Возможности
 
-## Run
+- Выполнение 10 последовательных HTTP/HTTPS-запросов.
+- Полное скачивание содержимого каждого ответа.
+- Подсчёт общего объёма скачанных данных.
+- Измерение времени выполнения каждого запроса.
+- Расчёт среднего времени запроса.
+- Расчёт средней скорости скачивания.
+- Обработка ошибок подключения и HTTP-запросов.
 
-```bash
-python3 speedtest.py "https://example.com/large-image.jpg"
-```
+## Требования
 
-Use a stable, publicly accessible file URL for a useful measurement. The script follows the server's response (including redirects), reads the body in chunks, and uses a 30-second timeout for each request.
+- Python 3.9 или новее.
+- Доступ к интернету.
 
-## Output units
+Дополнительные библиотеки не требуются.
+Используется стандартная библиотека Python.
 
-- Downloaded data: bytes and decimal megabytes (MB, 1 MB = 1,000,000 bytes).
-- Average request time: seconds.
-- Download speed: decimal megabytes per second (MB/s), calculated as total bytes downloaded divided by total time spent downloading all ten responses. This is the average across the full run, including server and network latency during those requests.
+## Запуск
+
+Клонируйте репозиторий:
+
+    git clone https://github.com/skulsik/SpeedTest.git
+
+Перейдите в директорию проекта:
+
+    cd SpeedTest
+
+Запустите программу, передав URL в качестве аргумента:
+
+    python3 speedtest.py https://example.com/image.jpg
+
+## Пример результата
+
+    Начинаем измерение скорости: https://example.com/image.jpg
+
+    Запрос 1/10: 2,500,000 байт за 1.234 с
+    Запрос 2/10: 2,500,000 байт за 1.105 с
+    Запрос 3/10: 2,500,000 байт за 1.189 с
+    ...
+
+    --- Результаты измерения ---
+    Выполнено запросов: 10
+    Общий объём скачанных данных: 25,000,000 байт
+    Общий объём: 25.000 MB
+    Среднее время запроса: 1.176 с
+    Средняя скорость скачивания: 2.126 MB/s
+
+*Значения приведены для примера.*
+
+## Единицы измерения
+
+- Объём данных: байты (B) и мегабайты (MB).
+- Время: секунды (s).
+- Скорость скачивания: мегабайты в секунду (MB/s).
+
+Используется десятичная система измерения:
+1 MB = 1,000,000 байт.
+
+## Особенности реализации
+
+- Запросы выполняются строго последовательно.
+- Следующий запрос начинается только после полного получения
+  ответа на предыдущий.
+- Данные считываются блоками по 64 КБ, что позволяет
+  не загружать весь файл в оперативную память.
+- Время измеряется с помощью time.perf_counter().
+- Таймаут одного запроса составляет 30 секунд.
+
+## Обработка ошибок
+
+Программа обрабатывает:
+- Ошибки HTTP (например, 404 или 500).
+- Ошибки подключения.
+- Превышение времени ожидания.
+- Некорректный URL.
+- Прерывание выполнения пользователем (Ctrl+C).
+
+## Запуск тестов
+
+Установите зависимости для разработки:
+
+    pip install -r requirements-dev.txt
+
+Запустите тесты:
+
+    python3 -m pytest -v
+
+Тесты проверяют:
+- Валидацию URL.
+- Успешное скачивание данных.
+- Подсчёт полученных байтов и времени загрузки.
+- Обработку HTTP-ошибок.
+- Обработку ошибок подключения.
+- Корректность итоговой статистики.
+- Прерывание программы пользователем.
+
+Для тестирования HTTP-запросов используются mock-объекты,
+поэтому доступ к интернету для запуска тестов не требуется.
